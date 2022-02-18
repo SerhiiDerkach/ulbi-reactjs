@@ -1,11 +1,7 @@
-import React, { useRef, useState } from "react";
-import Counter from "./components/Counter";
-import ClassCounter from "./components/ClassCounter";
+import React, { useState } from "react";
 import "./styles/App.css";
-import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
-import MyInput from "./components/UI/input/MyInput";
+import PostForm from "./components/PostForm";
 function App() {
 
   const [posts, setPosts] = useState([
@@ -14,33 +10,22 @@ function App() {
     {id: 3, title: 'Javascript 3', body: 'Description'}
   ])
 
-  const [title, setTitle] = useState('')
-  const bodyInputRef = useRef();
-  const addNewPost = (e) => {
-    e.preventDefault()
-    console.log(title);
-    console.log(bodyInputRef.current.value);
+  const createPost = (newPost) => {
+    setPosts([...posts, newPost])
+  }
+
+  const removePost = (post) => {
+    setPosts(posts.filter(p => p.id !== post.id))
   }
 
   return (
     <div className="App">
-      <form>
-        {/* Керований компонент */}
-        <MyInput 
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          type="text" 
-          placeholder="Назва поста"
-        />
-        {/* Некерований компонент */}
-        <MyInput 
-          ref={bodyInputRef}
-          type="text" 
-          placeholder="Опис поста"
-        />
-        <MyButton onClick={addNewPost}>Створити пост</MyButton>
-      </form>
-      <PostList posts={posts} title= "Пости про JS"/>
+      <PostForm create={createPost}/>
+      {posts.length
+        ? <PostList remove={removePost} posts={posts} title= "Пости про JS"/>
+        : <h1 style={{textAlign: 'center'}}>
+          Пости не знайдені</h1>
+      }
     </div>
   );
 }
